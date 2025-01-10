@@ -536,7 +536,7 @@ label {
 }
 
 .bodysign {
-  background-image: url("dark-kitchen.avif");
+  background-image: url("/frontend/public/dark-kitchen.avif");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
