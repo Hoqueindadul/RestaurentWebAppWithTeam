@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { BACKENDURL } from "../../backendUrl";
 import axios from 'axios';
 
-const backendUrl = BACKENDURL;
 
 function Booking() {
     const navigate = useNavigate();
@@ -33,7 +32,7 @@ function Booking() {
         setError(""); // Reset errors
 
         try {
-            const response = await axios.post(`${backendUrl}/booking`, formData);
+            const response = await axios.post(`${BACKENDURL}/booking`, formData);
 
             if (response.status === 200) {
                 const { bookingCode } = response.data; // Ensure the booking code comes from the backend
