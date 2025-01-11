@@ -64,23 +64,21 @@ const SignupForm = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Add authorization header if required by the backend
-          // "Authorization": `Bearer ${your_token}`, // Only if your backend requires authorization
         },
         body: JSON.stringify({
           username: formData.username,
           mobile: formData.mobile,
           email: formData.email,
           password: formData.password,
+          password2: formData.password2,
         }),
-        credentials: "include", // Include cookies or session if needed
       });
 
       const data = await response.json();
 
       if (response.ok) {
         alert(data.message || "Registration successful!");
-        navigate("/Login");
+        navigate("/Login"); // Redirect to login page after successful signup
       } else {
         setError(data.error || "Failed to register. Please try again.");
       }
