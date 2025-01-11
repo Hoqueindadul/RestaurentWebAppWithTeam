@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'; // Import bcrypt for password hashing
 
 const router = express.Router();
 
-router.post('/signup', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     console.log('Signup attempt:', req.body);
 
