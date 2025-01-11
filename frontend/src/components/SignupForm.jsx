@@ -60,8 +60,7 @@ const SignupForm = () => {
     setLoading(true); // Set loading state
 
     try {
-      const backendUrl = BACKENDURL;
-      const response = await fetch(`${backendUrl}/signup`, {
+      const response = await fetch(`${BACKENDURL}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
