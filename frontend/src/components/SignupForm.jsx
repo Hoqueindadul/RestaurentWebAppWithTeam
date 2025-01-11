@@ -65,6 +65,8 @@ const SignupForm = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          // If needed, add authorization headers or cookies
+          // "Authorization": `Bearer ${your_token}`,
         },
         body: JSON.stringify({
           username: formData.username,
@@ -72,6 +74,7 @@ const SignupForm = () => {
           email: formData.email,
           password: formData.password,
         }),
+        credentials: "include", // Include credentials if necessary (e.g., cookies or sessions)
       });
 
       const data = await response.json();
