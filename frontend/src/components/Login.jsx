@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-import { BACKENDURL } from "../backendUrl";
+import { BACKENDURL } from "../backendUrl";  // Assuming BACKENDURL is defined in backendUrl.js
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -31,6 +31,7 @@ const Login = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
+        credentials: 'include',  // Send cookies if needed for authentication
       });
 
       if (!response.ok) {

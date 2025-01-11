@@ -15,20 +15,23 @@ import contactRoute from './routes/contact.js';
 
 const app = express(); // Create an instance of an Express application
 const port = process.env.PORT || 5000; // Define the port for the server to listen on
-const localFrontendUrl = process.env.FRONTEND_URL_LOCAL || 'http://localhost:5173';
-const deploymentFrontendUrl =
-  process.env.DEPLOYMENT_FRONTEND_URL || 'https://restaurent-web-app-with-team.vercel.app/';
 
-// Middleware
-app.use(bodyParser.json()); // Parse incoming JSON requests
+// Allowed origins for CORS
+const localFrontendUrl = process.env.FRONTEND_URL_LOCAL || 'http://localhost:5173';
+const deploymentFrontendUrl = process.env.DEPLOYMENT_FRONTEND_URL || 'https://restaurent-web-app-with-team.vercel.app';
+
+// Middleware setup for CORS
 app.use(
   cors({
-    origin: [localFrontendUrl, deploymentFrontendUrl], // Allow both local and production URLs
+    origin: [localFrontendUrl, deploymentFrontendUrl], // Allow only specified origins
     credentials: true, // Allow cookies or authentication headers
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
   })
 );
+
+// Middleware for body parsing
+app.use(bodyParser.json()); // Parse incoming JSON requests
 
 // MongoDB Connection
 const mongoURI =
@@ -36,7 +39,7 @@ const mongoURI =
   'mongodb+srv://indadul9735:pnIbLCZonMyyhHxq@restaurentwebapp.18fog.mongodb.net/';
 
 mongoose
-  .connect(mongoURI)  // Removed useNewUrlParser and useUnifiedTopology
+  .connect(mongoURI) // Remove useNewUrlParser and useUnifiedTopology options
   .then(() => console.log('MongoDB connected successfully'))
   .catch((err) => {
     console.error('MongoDB connection error:', err);
