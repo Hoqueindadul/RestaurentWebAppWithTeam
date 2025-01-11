@@ -35,14 +35,13 @@ const mongoURI =
   process.env.MONGODB_URL ||
   'mongodb+srv://indadul9735:pnIbLCZonMyyhHxq@restaurentwebapp.18fog.mongodb.net/';
 
-  mongoose
+mongoose
   .connect(mongoURI)  // Removed useNewUrlParser and useUnifiedTopology
   .then(() => console.log('MongoDB connected successfully'))
   .catch((err) => {
     console.error('MongoDB connection error:', err);
     process.exit(1); // Exit the application if the database connection fails
   });
-
 
 // Routes
 app.use('/signup', signupRoute);
