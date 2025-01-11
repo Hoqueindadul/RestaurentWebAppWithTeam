@@ -1,1 +1,1 @@
-export const BACKENDURL="https://restaurentwebappwithteam.onrender.com"
+export const BACKENDURL = "https://restaurentwebappwithteam.onrender.com"

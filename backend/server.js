@@ -16,19 +16,29 @@ import contactRoute from './routes/contact.js';
 const app = express(); // Create an instance of an Express application
 const port = process.env.PORT || 5000; // Define the port for the server to listen on
 
-// Allowed origins for CORS
-const localFrontendUrl = process.env.FRONTEND_URL_LOCAL || 'http://localhost:5173';
-const deploymentFrontendUrl = process.env.DEPLOYMENT_FRONTEND_URL || 'https://restaurent-web-app-with-team.vercel.app';
-
-// Middleware setup for CORS
+// Allowed origins
+const allowedOrigins = [
+  'http://localhost:5173', // Local development
+  'https://restaurent-web-app-with-team.vercel.app', // Deployed frontend
+];
+app.options('*', cors());
 app.use(
   cors({
-    origin: [localFrontendUrl, deploymentFrontendUrl], // Allow only specified origins
-    credentials: true, // Allow cookies or authentication headers
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true); // Allow the request
+      } else {
+        callback(new Error('Not allowed by CORS')); // Block the request
+      }
+    },
+    credentials: true, // Allow cookies and credentials
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
   })
 );
+
+
+
 
 // Middleware for body parsing
 app.use(bodyParser.json()); // Parse incoming JSON requests
