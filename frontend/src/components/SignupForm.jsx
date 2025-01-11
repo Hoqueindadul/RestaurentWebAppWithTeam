@@ -64,8 +64,8 @@ const SignupForm = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // If needed, add authorization headers or cookies
-          // "Authorization": `Bearer ${your_token}`,
+          // Add authorization header if required by the backend
+          // "Authorization": `Bearer ${your_token}`, // Only if your backend requires authorization
         },
         body: JSON.stringify({
           username: formData.username,
@@ -73,7 +73,7 @@ const SignupForm = () => {
           email: formData.email,
           password: formData.password,
         }),
-        credentials: "include", // Include credentials if necessary (e.g., cookies or sessions)
+        credentials: "include", // Include cookies or session if needed
       });
 
       const data = await response.json();
