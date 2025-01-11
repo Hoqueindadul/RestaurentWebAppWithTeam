@@ -78,7 +78,7 @@ const SignupForm = () => {
 
       if (response.ok) {
         alert(data.message || "Registration successful!");
-        navigate("/Login"); // Redirect to login page after successful signup
+        navigate("/login"); // Redirect to login page after successful signup
       } else {
         setError(data.error || "Failed to register. Please try again.");
       }
@@ -91,7 +91,7 @@ const SignupForm = () => {
   };
 
   const handleLoginRedirect = () => {
-    navigate("/Login");
+    navigate("/login");
   };
 
   return (
