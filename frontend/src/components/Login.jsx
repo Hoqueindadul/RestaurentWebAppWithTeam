@@ -31,7 +31,6 @@ const Login = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
-        credentials: 'include',  // Send cookies if needed for authentication
       });
 
       if (!response.ok) {

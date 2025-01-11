@@ -6,24 +6,27 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
   try {
-    const { username, mobile, email, password } = req.body;
+    console.log('Login attempt:', req.body);
 
-    // Hash the password before saving the user
-    const saltRounds = 10; // Adjust salt rounds as needed
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const { username, password } = req.body;
 
-    const newUser = new User({
-      username,
-      mobile,
-      email,
-      password: hashedPassword, // Use the hashed password
-    });
+    const user = await User.findOne({ username });
+    if (!user) {
+      console.log('User not found');
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
 
-    await newUser.save();
-    res.status(200).json({ message: 'Registration completed successfully!' });
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      console.log('Invalid password');
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
+
+    console.log('Login successful');
+    res.status(200).json({ message: 'Login successful!' });
   } catch (error) {
-    console.error('Signup error:', error);
-    res.status(500).json({ error: 'Error registering new user' });
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
