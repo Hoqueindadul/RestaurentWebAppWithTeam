@@ -1,57 +1,49 @@
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose'; // Import mongoose for MongoDB connection
-import signupRoute from './routes/signup.js';
-import loginRoute from './routes/login.js';
-import bookingRoute from './routes/booking.js';
-import contactRoute from './routes/contact.js';
-
-// Load environment variables from .env file
-dotenv.config();
+import express from "express";
+import dotenv from "dotenv";
+import connectDatabase from "./dbConnection/DB_Connection.js";
+import userRoute from "./routes/user.router.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+dotenv.config();
 
-// MongoDB connection
-const connectDB = async () => {
-  try {
-    const dbUri = process.env.MONGODB_URL || 'mongodb+srv://indadul9735:pnIbLCZonMyyhHxq@restaurentwebapp.18fog.mongodb.net/';
-    await mongoose.connect(dbUri); // No need for useNewUrlParser or useUnifiedTopology
-    console.log('Connected to MongoDB');
-  } catch (error) {
-    console.error('Error connecting to MongoDB:', error.message);
-    process.exit(1); // Exit process with failure
-  }
-};
+// Load environment variables
+const mongo_url = process.env.MONGODB_URL;
+const port = process.env.PORT || 5000; // Default port fallback
 
-connectDB() // Call the MongoDB connection function
+const localFrontendUrl = process.env.FRONTEND_URL_LOCAL || "http://localhost:5173";
+const deploymentFrontendUrl = process.env.MAIN_FRONTEND_URL || "https://restaurent-web-app-with-team.vercel.app/";
 
-// Enable CORS with specific origin and credentials
+// Middleware
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
+
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://restaurent-web-app-with-team.vercel.app'], // Adjust for dev and prod environments
-    credentials: true, // Allow cookies/session handling
+    origin: [localFrontendUrl, deploymentFrontendUrl], // Allow both local and production URLs
+    credentials: true, // Allow cookies or authentication headers
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow necessary HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow necessary headers
   })
 );
 
-// Middleware for parsing JSON and handling body
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// end points
+app.use("/api/users", userRoute);
 
-// Route handlers
-app.use('/signup', signupRoute);
-app.use('/login', loginRoute);
-app.use('/booking', bookingRoute);
-app.use('/contact', contactRoute);
 
-// Default error handling
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send({ error: 'Something went wrong!' });
-});
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+
+
+// Connect to the database and start the server
+connectDatabase(mongo_url)
+  .then(() => {
+    console.log("MongoDB is Connected");
+    app.listen(port, () => {
+      console.log(`Server is running on: ${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to connect to MongoDB", err);
+  });

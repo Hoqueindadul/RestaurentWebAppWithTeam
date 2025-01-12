@@ -1,123 +1,122 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthContext";
-import { BACKENDURL } from "../backendUrl";  // Assuming BACKENDURL is defined in backendUrl.js
-import AOS from "aos";
-import "aos/dist/aos.css";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
+import { toast, Toaster } from "react-hot-toast";
+import axios from "axios";
+import { DEPLOYMENT_BACKEND_URL } from "../deployment_backend_url";
+import { LOCAL_BACKEND_URL } from "../local_backend_url";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({ username: "", password: "" });
-  const [error, setError] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
-  const { login } = useAuth();
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    AOS.init(); // Initialize AOS animations
-  }, []);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    const handleLogin = async (e) => {
+        e.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { username, password } = formData;
+        // Validation for empty fields
+        if (!username || !password) {
+            toast.error("Please fill in all required fields.");
+            return;
+        }
 
-    try {
-      const response = await fetch(`${BACKENDURL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+        try {
+            // Determine backend URL based on environment
+            const BACKEND_URL =
+                process.env.NODE_ENV === "production"
+                    ? DEPLOYMENT_BACKEND_URL
+                    : LOCAL_BACKEND_URL;
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Login failed");
-      }
+            // Login API call
+            const { data } = await axios.post(
+                `${BACKEND_URL}/api/users/login`,
+                { username, password },
+                { headers: { "Content-Type": "application/json" } }
+            );
 
-      const data = await response.json();
-      login(username); // Set user in auth context
-      localStorage.setItem("loggedInUsername", username); // Save to localStorage
-      setShowPopup(true);
+            // Store token and update auth context
+            localStorage.setItem("jwt", data.token);
+            login(data.token);
 
-      // Auto-close popup and navigate to homepage
-      setTimeout(() => {
-        setShowPopup(false);
-        navigate("/");
-      }, 2000);
-    } catch (error) {
-      console.error("Error during login:", error);
-      setError(error.message);
-    }
-  };
+            // Display success message
+            toast.success(data.message || "User logged in successfully.");
 
-  const handleLoginRedirect = () => {
-    navigate("/SignupForm");
-  };
+            // Clear form fields
+            setUsername("");
+            setPassword("");
 
-  return (
-    <div className="container-xxl bg-white p-0">
-      <div className="bodysign">
-        <form
-          id="login-box"
-          onSubmit={handleSubmit}
-          data-aos="fade-in"
-          data-aos-duration="2000"
-        >
-          <div className="left">
-            <h1>
-              <b>Log In</b>
-            </h1>
-            <br />
-            <input
-              type="text"
-              name="username"
-              placeholder="Username"
-              required
-              value={formData.username}
-              onChange={handleChange}
-            />
-            <br />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-            />
-            <input type="submit" value="LogIn" />
-            {error && <p className="text-danger mt-2">{error}</p>}
-            <button
-              type="button"
-              onClick={handleLoginRedirect}
-              className="btn5"
-            >
-              Don't have an account?
-            </button>
-          </div>
-          <div className="right">
-            <span className="loginwith">Log-In with</span>
-            <br />
-            <button type="button" className="social-signin facebook">
-              Log in with Facebook
-            </button>
-            <button type="button" className="social-signin twitter">
-              Log in with Twitter
-            </button>
-            <button type="button" className="social-signin google">
-              Log in with Google+
-            </button>
-          </div>
-          <div className="orl">OR</div>
-        </form>
-        {showPopup && <div className="popup">Login successful!</div>}
-      </div>
-    </div>
-  );
+            // Redirect after delay
+            setTimeout(() => {
+                navigate("/");
+            }, 3000); // 3 seconds delay
+        } catch (error) {
+            // Handle error response
+            const errorMessage =
+                error.response?.data?.message || "Failed to log in. Please try again.";
+            toast.error(errorMessage);
+        }
+    };
+
+    return (
+        <div className="container-fluid d-flex justify-content-center align-items-center min-vh-100 loginPage">
+            {/* Include the Toaster for toast messages */}
+            <Toaster position="top-right" reverseOrder={false} />
+
+            <div className="card shadow-lg p-4" style={{ maxWidth: "500px", width: "100%" }}>
+                <div className="card-body">
+                    <h2 className="card-title text-center text-primary mb-4">
+                        <b>Log In</b>
+                    </h2>
+                    <form onSubmit={handleLogin}>
+                        {/* Username Input */}
+                        <div className="mb-3">
+                            <label htmlFor="username" className="form-label">Username</label>
+                            <input
+                                type="text"
+                                id="username"
+                                className="form-control"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                placeholder="Enter your username"
+                                required
+                            />
+                        </div>
+
+                        {/* Password Input */}
+                        <div className="mb-3">
+                            <label htmlFor="password" className="form-label">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                className="form-control"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Enter your password"
+                                required
+                            />
+                        </div>
+
+                        {/* Submit Button */}
+                        <button type="submit" className="btn btn-primary w-100 mb-3">
+                            Login
+                        </button>
+
+                        {/* Signup Link */}
+                        <div className="text-center">
+                            <Link to="/signupForm" className="btn btn-link">
+                                Don't have an account? Sign up
+                            </Link>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default Login;

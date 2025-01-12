@@ -514,28 +514,8 @@ label {
 
 /* styles.css */
 
-.signup {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #f6f8f9; /* Blue background */
-  font-size: 20px; /* Font size */
-  font-weight: bold; /* Make text bold */
-  text-align: center; /* Center the text */
-  border-radius: 5px; /* Rounded corners */
-  text-decoration: none; /* Remove underline */
-  cursor: pointer; /* Show a pointer cursor on hover */
-  transition: background-color 0.3s; /* Smooth transition for background color */
-}
 
-.signup:hover {
-  background-color: #19222e; /* Darker blue on hover */
-}
-
-*:focus {
-  outline: none;
-}
-
-.bodysign {
+.loginPage {
   background-image: url('/dark-kitchen.jpg');
   background-size: cover;
   background-position: center;
@@ -546,189 +526,54 @@ label {
   align-items: center; /* Centering the form */
 }
 
-
-#login-box {
-  border-radius: 20px;
-  position: relative;
-  margin: 5% auto;
-  width: 600px;
-  height: 500px;
-  border: 2px solid rgb(106, 97, 97);
+.card {
+  border-radius: 15px;
+  background-color: transparent;
   backdrop-filter: blur(10px);
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
-.left {
-  position: absolute;
-  top: 0;
-  left: 0;
-  box-sizing: border-box;
-  padding: 40px;
-  width: 300px;
-  height: 400px;
-}
-
-h1 {
-  margin: 0 0 20px 0;
-  font-weight: 450;
-  font-size: 40px;
-  color: #111010;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="number"],
-input[type="password"] {
-  display: block;
-  box-sizing: border-box;
-  margin-bottom: 20px;
-  padding: 4px;
-  width: 220px;
-  height: 32px;
-  border: none;
-  border-bottom: 6px solid #f7eeee;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 15px;
-  transition: 0.2s ease;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus {
-  border-bottom: 2px solid #16a085;
-  color: #16a085;
-  transition: 0.2s ease;
-}
-
-input[type="submit"] {
-  margin-top: 25px;
-  margin-left: 200px;
-  width: 120px;
-  height: 32px;
-  background: #16a085;
-  border: none;
-  border-radius: 2px;
-  color: #FFF;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  text-transform: uppercase;
-  transition: 0.1s ease;
-  cursor: pointer;
-}
-
-input[type="submit"]:hover,
-input[type="submit"]:focus {
-  border-radius: 50px;
-  opacity: 0.8;
-  box-shadow: 0 2px 30px rgba(238, 236, 236, 0.4);
-  transition: 0.1s ease;
-}
-
-input[type="submit"]:active {
-  opacity: 1;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  transition: 0.1s ease;
-}
-
-.or {
-  position: absolute;
-  top: 215px;
-  left: 280px;
-  width: 40px;
-  height: 40px;
-  background: #5cd0c4;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  line-height: 40px;
-  text-align: center;
-}
-.orl {
-  position: absolute;
-  top: 170px;
-  left: 280px;
-  width: 40px;
-  height: 40px;
-  background: #6de262;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  line-height: 40px;
-  text-align: center;
-}
-
-.right {
-  position: absolute;
-  top: 0;
-  right: 0;
-  box-sizing: border-box;
-  padding: 40px;
-  width: 300px;
-  height: 400px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 0 2px 2px 0;
-}
-
-.right .loginwith {
-  display: block;
-  margin-bottom: 36px;
-  font-size: 28px;
-  color: #fbfafa;
-  text-align: center;
-}
-
-button.social-signin {
-  margin-bottom: 20px;
-  width: 220px;
-  height: 36px;
-  border: none;
-  border-radius: 20px;
-  color: #FFF;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  transition: 0.2s ease;
-  cursor: pointer;
-}
-
-button.social-signin:hover,
-button.social-signin:focus {
-  box-shadow: 0 2px 4px rgba(253, 250, 250, 0.4);
-  transition: 0.2s ease;
-}
-
-button.social-signin:active {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  transition: 0.2s ease;
-}
-
-button.social-signin.facebook {
-  background: #32508E;
-}
-
-button.social-signin.twitter {
-  background: #55ACEE;
-}
-
-button.social-signin.google {
-  background: #DD4B39;
-}
-
-.btn5{
-  background-color: #deaaaa;
-  margin-top: 10px;
-  margin-left: 160px;
-  width: 200px;
-  height: 49px;
-  border: none;
+.card-body {
+  padding: 2rem;
+  border: 2px solid rgb(106, 97, 97);
   border-radius: 10px;
-  color: #090909;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  transition: 0.2s ease;
-  cursor: pointer;
 }
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+
+
 
 
 /************************ Sign-UP SECTION STYLING STARTS **************************************/
+.card-title {
+  font-size: 3rem;
+}
+.signupPage{
+  background-image: url('/dark-kitchen.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+ /* Ensures the background covers the full viewport height */
+  display: flex; /* Centering the form */
+  justify-content: center; /* Centering the form */
+  align-items: center; 
+}
+button {
+  transition: all 0.3s ease;
+}
 
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
 
 /************************ RECIPES SECTION STYLING STARTS **************************************/

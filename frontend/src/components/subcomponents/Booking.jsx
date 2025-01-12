@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
-import { BACKENDURL } from "../../backendUrl";
+import { DEPLOYMENT_BACKEND_URL } from "../../deployment_backend_url"
+import { LOCAL_BACKEND_URL } from "../../local_backend_url"
 import axios from 'axios';
 
 

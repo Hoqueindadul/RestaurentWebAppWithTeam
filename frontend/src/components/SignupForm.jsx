@@ -1,188 +1,154 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { BACKENDURL } from "../backendUrl";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { DEPLOYMENT_BACKEND_URL } from "../deployment_backend_url";
+import { LOCAL_BACKEND_URL } from "../local_backend_url";
+import { toast, Toaster } from "react-hot-toast";
+import axios from "axios";
 
 const SignupForm = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    username: "",
-    mobile: "",
-    email: "",
-    password: "",
-    password2: "",
-  });
-  const [error, setError] = useState(""); // State for error messages
-  const [loading, setLoading] = useState(false); // State for loading indicator
+    const [username, setUsername] = useState("");
+    const [mobile, setMobile] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+    const navigate = useNavigate();
 
-  const validateForm = () => {
-    const { username, mobile, email, password, password2 } = formData;
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
-    // Validate mobile number (10 digits)
-    if (!/^\d{10}$/.test(mobile)) {
-      setError("Mobile number must be 10 digits.");
-      return false;
-    }
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        
+        // Validation for empty fields
+        if (!username || !mobile || !email || !password) {
+            toast.error("All fields are required.");
+            return;
+        }
 
-    // Validate email format
-    if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-      setError("Please enter a valid email address.");
-      return false;
-    }
+        try {
+            const formData = {
+                username,
+                mobile,
+                email,
+                password,
+            };
 
-    // Validate password strength
-    if (password.length < 8 || !/[!@#$%^&*]/.test(password)) {
-      setError("Password must be at least 8 characters and include a special character.");
-      return false;
-    }
+            // Use appropriate backend URL
+            const BACKEND_URL = process.env.NODE_ENV === "production"
+                ? DEPLOYMENT_BACKEND_URL
+                : LOCAL_BACKEND_URL;
 
-    // Check if passwords match
-    if (password !== password2) {
-      setError("Passwords do not match.");
-      return false;
-    }
+            const response = await axios.post(`${BACKEND_URL}/api/users/register`, formData, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-    return true;
-  };
+            // Show success message
+            toast.success("User registered successfully!");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(""); // Reset error state
+            // Reset form fields
+            setUsername("");
+            setMobile("");
+            setEmail("");
+            setPassword("");
 
-    if (!validateForm()) return;
+            // Redirect after a delay to allow the toast to display
+            setTimeout(() => {
+                navigate("/login");
+            }, 3000); // 3 seconds delay
 
-    setLoading(true); // Set loading state
+        } catch (error) {
+            // Show error message from backend or fallback message
+            const errorMessage = error.response?.data?.message || "An unexpected error occurred. Please try again.";
+            toast.error(errorMessage);
+        }
+    };
 
-    try {
-      const response = await fetch(`${BACKENDURL}/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          mobile: formData.mobile,
-          email: formData.email,
-          password: formData.password,
-          password2: formData.password2,
-        }),
-      });
+    return (
+        <div className="container-fluid d-flex justify-content-center align-items-center min-vh-100 signupPage">
+            {/* Include the Toaster for toast messages */}
+            <Toaster position="top-right" reverseOrder={false} />
 
-      const data = await response.json();
+            <div className="card shadow-lg p-4 m-4" style={{ maxWidth: "500px", width: "100%" }}>
+                <div className="card-body">
+                    <h2 className="card-title text-center text-primary mb-4">
+                        <b>Sign Up</b>
+                    </h2>
+                    <form onSubmit={handleRegister}>
+                        {/* Username Input */}
+                        <div className="mb-3">
+                            <label htmlFor="username" className="form-label">Username</label>
+                            <input
+                                type="text"
+                                id="username"
+                                className="form-control"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                placeholder="Enter your username"
+                                required
+                            />
+                        </div>
 
-      if (response.ok) {
-        alert(data.message || "Registration successful!");
-        navigate("/login"); // Redirect to login page after successful signup
-      } else {
-        setError(data.error || "Failed to register. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setError("An error occurred during registration. Please try again.");
-    } finally {
-      setLoading(false); // Reset loading state
-    }
-  };
+                        {/* Mobile Input */}
+                        <div className="mb-3">
+                            <label htmlFor="mobile" className="form-label">Phone Number</label>
+                            <input
+                                type="text"
+                                id="mobile"
+                                className="form-control"
+                                value={mobile}
+                                onChange={(e) => setMobile(e.target.value)}
+                                placeholder="Enter your phone number"
+                                required
+                            />
+                        </div>
 
-  const handleLoginRedirect = () => {
-    navigate("/login");
-  };
+                        {/* Email Input */}
+                        <div className="mb-3">
+                            <label htmlFor="email" className="form-label">Email</label>
+                            <input
+                                type="email"
+                                id="email"
+                                className="form-control"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter your email"
+                                required
+                            />
+                        </div>
 
-  return (
-    <div className="bodysign">
-      <form
-        id="login-box"
-        onSubmit={handleSubmit}
-        data-aos="fade-out"
-        data-aos-duration="3000"
-      >
-        <div className="left">
-          <h1><b>Sign Up</b></h1>
+                        {/* Password Input */}
+                        <div className="mb-3">
+                            <label htmlFor="password" className="form-label">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                className="form-control"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Enter your password"
+                                required
+                            />
+                        </div>
 
-          {error && <p className="text-danger">{error}</p>} {/* Error message */}
+                        {/* Submit Button */}
+                        <button type="submit" className="btn btn-primary w-100 mb-3">
+                            Create Account
+                        </button>
 
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            required
-            value={formData.username}
-            onChange={handleChange}
-            aria-label="Username"
-          />
-          <input
-            type="text"
-            name="mobile"
-            placeholder="Mobile Number"
-            required
-            value={formData.mobile}
-            onChange={handleChange}
-            aria-label="Mobile Number"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            required
-            value={formData.email}
-            onChange={handleChange}
-            aria-label="Email"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-            value={formData.password}
-            onChange={handleChange}
-            aria-label="Password"
-          />
-          <input
-            type="password"
-            name="password2"
-            placeholder="Confirm Password"
-            required
-            value={formData.password2}
-            onChange={handleChange}
-            aria-label="Confirm Password"
-          />
-
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? "Signing Up..." : "Sign Me Up"}
-          </button>
-
-          <button
-            type="button"
-            onClick={handleLoginRedirect}
-            className="btn btn-secondary mt-3"
-          >
-            Already have an account? Login
-          </button>
+                        {/* Login Link */}
+                        <div className="text-center">
+                            <Link to="/login" className="btn btn-link">
+                                Already have an account? Login
+                            </Link>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div className="right">
-          <span className="loginwith">Sign in with<br />social network</span>
-
-          <button type="button" className="social-signin facebook">
-            Log in with Facebook
-          </button>
-          <button type="button" className="social-signin twitter">
-            Log in with Twitter
-          </button>
-          <button type="button" className="social-signin google">
-            Log in with Google+
-          </button>
-        </div>
-        <div className="or">OR</div>
-      </form>
-    </div>
-  );
+    );
 };
 
 export default SignupForm;

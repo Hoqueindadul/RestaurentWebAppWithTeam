@@ -1,23 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from './AuthContext';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Make sure Bootstrap CSS is imported
+import React, { useState, useRef, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Navbar = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);  // Step 1: Manage login popup visibility
   const popoverRef = useRef(null);
   const { loggedInUsername, logout } = useAuth();
-  
-  const toggleDropdown = () => {
-    setDropdownVisible(!dropdownVisible);
-  };
+  const navigate = useNavigate();
 
-  const toggleMenu = () => {
-    setMenuVisible(!menuVisible);
-  };
+  const toggleDropdown = () => setDropdownVisible(!dropdownVisible);
+
+  const toggleMenu = () => setMenuVisible(!menuVisible);
 
   const handleClickOutside = (event) => {
     if (popoverRef.current && !popoverRef.current.contains(event.target)) {
@@ -26,16 +24,27 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (!loggedInUsername) {
+      setShowLoginPopup(true);  // Show the login popup if user is not logged in
+    }
+  }, [loggedInUsername]);
+
+  const handleLogin = () => {
+    setShowLoginPopup(false);  // Hide the popup after login
+    navigate("/login");
+  };
 
   return (
     <div className="navbar">
       <nav id="navmenu" className="navmenu">
-        <div className="logo" data-aos="fade-right" data-aos-duration="1000">
+        <div className="logo">
           <img src="/logo.png" alt="logo" />
         </div>
         <div className="hamburger" onClick={toggleMenu}>
@@ -47,10 +56,10 @@ const Navbar = () => {
           <li onClick={toggleDropdown} className="menu-item" ref={popoverRef}>
             Menu <span className="arrow">&#9662;</span>
             {dropdownVisible && (
-              <div className="popover" data-aos="fade-down" data-aos-duration="500">
-                <ul className="popover-content" type="none">
-                  <li><Link to="/veg">VEG</Link></li>
-                  <li><Link to="/nonveg">Non-VEG</Link></li>
+              <div className="popover">
+                <ul className="popover-content">
+                  <li><Link to="/veg">Veg</Link></li>
+                  <li><Link to="/nonveg">Non-Veg</Link></li>
                 </ul>
               </div>
             )}
@@ -59,18 +68,22 @@ const Navbar = () => {
           <li><Link to="/contact">Contact</Link></li>
         </ul>
         {loggedInUsername ? (
-          <DropdownButton id="dropdown-basic-button" title={loggedInUsername} className="ms-2">
-            <Dropdown.Item as={Link} to="/profile">Profile</Dropdown.Item>
+          <DropdownButton
+            id="dropdown-basic-button"
+            title={typeof loggedInUsername === "string" ? loggedInUsername : "User"}
+            className="ms-2"
+          >
+            <Dropdown.Item onClick={() => navigate("/profile")}>Profile</Dropdown.Item>
             <Dropdown.Item onClick={() => {
               logout();
-              navigate('/login');
+              navigate("/login");
             }}>Logout</Dropdown.Item>
           </DropdownButton>
         ) : (
-          <Link to="/signupForm" className="btn btn-primary py-2 px-4">Sign Up</Link>
+          <Link to="/signupForm" className="btn btn-primary">Sign Up</Link>
         )}
-      </nav >
-    </div >
+      </nav>
+    </div>
   );
 };
 
