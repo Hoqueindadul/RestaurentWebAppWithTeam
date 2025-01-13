@@ -58,8 +58,8 @@ const Navbar = () => {
             {dropdownVisible && (
               <div className="popover">
                 <ul className="popover-content">
-                  <li><Link to="/veg">Veg</Link></li>
-                  <li><Link to="/nonveg">Non-Veg</Link></li>
+                  <li><Link to="/veg" className="dropDownItem">Veg</Link></li>
+                  <li><Link to="/nonveg" className="dropDownItem">Non-Veg</Link></li>
                 </ul>
               </div>
             )}

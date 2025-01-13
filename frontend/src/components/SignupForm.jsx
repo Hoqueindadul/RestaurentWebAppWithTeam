@@ -10,6 +10,7 @@ const SignupForm = () => {
     const [mobile, setMobile] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false); // State for loading
 
     const navigate = useNavigate();
 
@@ -19,12 +20,14 @@ const SignupForm = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        
+
         // Validation for empty fields
         if (!username || !mobile || !email || !password) {
             toast.error("All fields are required.");
             return;
         }
+
+        setIsLoading(true); // Set loading to true before API call
 
         try {
             const formData = {
@@ -35,9 +38,10 @@ const SignupForm = () => {
             };
 
             // Use appropriate backend URL
-            const BACKEND_URL = process.env.NODE_ENV === "production"
-                ? DEPLOYMENT_BACKEND_URL
-                : LOCAL_BACKEND_URL;
+            const BACKEND_URL =
+                process.env.NODE_ENV === "production"
+                    ? DEPLOYMENT_BACKEND_URL
+                    : LOCAL_BACKEND_URL;
 
             const response = await axios.post(`${BACKEND_URL}/api/users/register`, formData, {
                 headers: {
@@ -58,11 +62,13 @@ const SignupForm = () => {
             setTimeout(() => {
                 navigate("/login");
             }, 3000); // 3 seconds delay
-
         } catch (error) {
             // Show error message from backend or fallback message
-            const errorMessage = error.response?.data?.message || "An unexpected error occurred. Please try again.";
+            const errorMessage =
+                error.response?.data?.message || "An unexpected error occurred. Please try again.";
             toast.error(errorMessage);
+        } finally {
+            setIsLoading(false); // Reset loading state
         }
     };
 
@@ -134,8 +140,15 @@ const SignupForm = () => {
                         </div>
 
                         {/* Submit Button */}
-                        <button type="submit" className="btn btn-primary w-100 mb-3">
-                            Create Account
+                        <button type="submit" className="btn p-2 btn-primary w-100 mb-3" disabled={isLoading}>
+                            {isLoading ? (
+                                <span>
+                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Sign Up...
+                                </span>
+                            ) : (
+                                "Sign Up"
+                            )}
                         </button>
 
                         {/* Login Link */}

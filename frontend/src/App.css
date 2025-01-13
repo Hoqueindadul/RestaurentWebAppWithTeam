@@ -30,11 +30,12 @@ html, body {
 /************************ NAVBAR SECTION STYLING STARTS **************************************/
 
 .navbar {
-  background-color: #c9381b;
+  background-color: #5a5a59;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px 30px;
+  padding: 10px 30px;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
 }
 
 .navmenu {
@@ -61,9 +62,13 @@ html, body {
 }
 
 .nav-links a {
-  color: rgb(237, 248, 248);
+  color: rgb(228, 231, 231);
   text-decoration: none;
-  font-size: 25px;
+  font-size: 1.3rem;
+}
+.nav-links a:hover {
+  color: rgb(184, 187, 187);
+  text-decoration: none;
 }
 /* Responsive Styles */
 .hamburger {
@@ -109,15 +114,21 @@ html, body {
 .popover {
   position: absolute;
   top: 100%; /* Adjust based on where you want the popover to appear */
-  background-color: rgb(38, 38, 56);
-  border-radius: 40px;
+  left: 38%;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
   z-index: 1001;
+  color: rgb(33, 34, 34);
 }
-
+.popover-content .dropDownItem{
+  color: #3b3a3a;
+  font-size: 1.3rem;
+}
 .popover-content {
   margin: 0;
   padding: 0;
   list-style-type: none;
+  color: black;
 }
 
 .popover-content li {
@@ -125,8 +136,9 @@ html, body {
 }
 
 .popover-content li:hover {
-  background-color: #ac2424;
-  border-radius: 50px;
+  background-color: #8292c9;
+  border-radius: 10px;
+  padding: 4px 5px;
 }
 .veg-menu{
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -139,8 +151,12 @@ html, body {
 }
 .menu-item {
   cursor: pointer;
-  font-size: 25px;
-  color: rgb(237, 248, 248);
+  font-size: 1.3rem;
+  color: rgb(228, 231, 231);
+}
+.menu-item:hover {
+  
+  color: rgb(159, 161, 161);
 }
 .non-veg{
   padding:20px;
@@ -180,7 +196,7 @@ html, body {
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
-  color:rgb(183, 201, 216);
+  color:rgb(162, 197, 8);
   
 }
 .non-veg-item {
@@ -320,19 +336,16 @@ html, body {
   align-items: center;
   min-height: 100vh;
   background: url('bgc.jpg') no-repeat center center/cover;
-  padding: 20px;
+  
+}
+.background-container {
+  background-image: url("bgc.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh; /* Ensures it covers the viewport */
 }
 
-.booking {
-  background: rgba(83, 84, 78, 0.9);
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(206, 209, 29, 0.1);
-  width: 100%;
-  max-width: 500px;
-  border: 2px solid rgb(106, 97, 97);
-  backdrop-filter: blur(10px);
-}
 
 .hq {
   font-size: 30px;
@@ -789,6 +802,7 @@ button:hover {
   display: block;
   margin-bottom: 5px;
   padding: 0;
+  text-decoration: none;
   text-align: left;
   color: #FFFFFF;
   font-size: 15px;
@@ -824,6 +838,7 @@ button:hover {
   margin-right: 15px;
   padding-right: 15px;
   border-right: 1px solid rgba(255, 255, 255, .1);
+  text-decoration: none;
 }
 
 .footer .footer-menu a:last-child {

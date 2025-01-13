@@ -18,7 +18,7 @@ const deploymentFrontendUrl = process.env.MAIN_FRONTEND_URL || "https://restaure
 // Middleware
 app.use(cookieParser());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
@@ -29,12 +29,8 @@ app.use(
   })
 );
 
-// end points
+// Endpoints
 app.use("/api/users", userRoute);
-
-
-
-
 
 // Connect to the database and start the server
 connectDatabase(mongo_url)

@@ -1,12 +1,13 @@
-import express from "express"
-import { login, logout, register} from "../controler/user.controler.js"
-import { isAuthenticated } from "../middleware/authStudent.js"
+import express from "express";
+import { login, logout, register, bookTabel, contactFormSubmit} from "../controler/user.controler.js";
+import { isAuthenticated } from "../middleware/authStudent.js";
 
+const router = express.Router();
 
-const router = express.Router()
+router.post("/register", register);
+router.post("/login", login);
+router.get("/logout", isAuthenticated, logout);
+router.post("/book-a-table", bookTabel);
+router.post("/contact", contactFormSubmit);
 
-router.post("/register", register)
-router.post("/login", login)
-router.get("/logout", isAuthenticated, logout)
-
-export default router
+export default router;

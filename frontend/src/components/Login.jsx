@@ -9,6 +9,7 @@ import { LOCAL_BACKEND_URL } from "../local_backend_url";
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false); // State for loading
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -18,12 +19,14 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-
+    
         // Validation for empty fields
         if (!username || !password) {
             toast.error("Please fill in all required fields.");
             return;
         }
+
+        setIsLoading(true); // Set loading to true when the form is submitted
 
         try {
             // Determine backend URL based on environment
@@ -39,9 +42,10 @@ const Login = () => {
                 { headers: { "Content-Type": "application/json" } }
             );
 
-            // Store token and update auth context
+            // Store token and update auth context with both token and username
             localStorage.setItem("jwt", data.token);
-            login(data.token);
+            localStorage.setItem("username", username); // Store the username in localStorage
+            login(username, data.token); // Call login with both username and token
 
             // Display success message
             toast.success(data.message || "User logged in successfully.");
@@ -59,6 +63,8 @@ const Login = () => {
             const errorMessage =
                 error.response?.data?.message || "Failed to log in. Please try again.";
             toast.error(errorMessage);
+        } finally {
+            setIsLoading(false); // Set loading to false after the process finishes
         }
     };
 
@@ -102,8 +108,15 @@ const Login = () => {
                         </div>
 
                         {/* Submit Button */}
-                        <button type="submit" className="btn btn-primary w-100 mb-3">
-                            Login
+                        <button type="submit" className="btn p-2 btn-primary w-100 mb-3" disabled={isLoading}>
+                            {isLoading ? (
+                                <span>
+                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Login...
+                                </span>
+                            ) : (
+                                "Login"
+                            )}
                         </button>
 
                         {/* Signup Link */}
